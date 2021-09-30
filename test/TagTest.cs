@@ -23,7 +23,7 @@ namespace test
     }
 
     [Fact]
-    public void Test1()
+    public void ShouldCreateBasicTag()
     {
       using var ctx = new Database(_options);
       ctx.Database.EnsureDeleted();

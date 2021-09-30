@@ -10,10 +10,17 @@ CREATE TABLE IF NOT EXISTS "Todos" (
     "Due" TEXT NOT NULL
 );
 CREATE TABLE sqlite_sequence(name,seq);
+CREATE TABLE IF NOT EXISTS "Comments" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Comments" PRIMARY KEY AUTOINCREMENT,
+    "Text" TEXT NULL,
+    "TodoId" INTEGER NULL,
+    CONSTRAINT "FK_Comments_Todos_TodoId" FOREIGN KEY ("TodoId") REFERENCES "Todos" ("Id") ON DELETE RESTRICT
+);
 CREATE TABLE IF NOT EXISTS "Tags" (
     "Name" TEXT NOT NULL CONSTRAINT "PK_Tags" PRIMARY KEY,
     "Color" INTEGER NOT NULL,
     "TodoId" INTEGER NULL,
     CONSTRAINT "FK_Tags_Todos_TodoId" FOREIGN KEY ("TodoId") REFERENCES "Todos" ("Id") ON DELETE RESTRICT
 );
+CREATE INDEX "IX_Comments_TodoId" ON "Comments" ("TodoId");
 CREATE INDEX "IX_Tags_TodoId" ON "Tags" ("TodoId");

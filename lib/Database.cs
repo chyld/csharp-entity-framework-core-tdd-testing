@@ -6,6 +6,7 @@ namespace lib
   public class Database : DbContext
   {
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<Comment> Comments { get; set; }
     public DbSet<Todo> Todos { get; set; }
     public Database() : base() { }
     public Database(DbContextOptions<Database> options) : base(options) { }

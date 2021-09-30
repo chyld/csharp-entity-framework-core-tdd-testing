@@ -16,6 +16,25 @@ namespace lib.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.10");
 
+            modelBuilder.Entity("lib.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("TodoId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TodoId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("lib.Tag", b =>
                 {
                     b.Property<string>("Name")
@@ -57,15 +76,28 @@ namespace lib.Migrations
                     b.ToTable("Todos");
                 });
 
+            modelBuilder.Entity("lib.Comment", b =>
+                {
+                    b.HasOne("lib.Todo", "Todo")
+                        .WithMany("Comments")
+                        .HasForeignKey("TodoId");
+
+                    b.Navigation("Todo");
+                });
+
             modelBuilder.Entity("lib.Tag", b =>
                 {
-                    b.HasOne("lib.Todo", null)
+                    b.HasOne("lib.Todo", "Todo")
                         .WithMany("Tags")
                         .HasForeignKey("TodoId");
+
+                    b.Navigation("Todo");
                 });
 
             modelBuilder.Entity("lib.Todo", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618

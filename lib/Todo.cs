@@ -11,5 +11,6 @@ namespace lib
     public string Title { get; set; }
     public DateTime Due { get; set; }
     public List<Tag> Tags { get; set; } = new();
+    public List<Comment> Comments { get; set; } = new();
   }
 }

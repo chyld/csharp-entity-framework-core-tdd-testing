@@ -24,6 +24,26 @@ namespace lib.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Text = table.Column<string>(type: "TEXT", nullable: true),
+                    TodoId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Todos_TodoId",
+                        column: x => x.TodoId,
+                        principalTable: "Todos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -43,6 +63,11 @@ namespace lib.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_TodoId",
+                table: "Comments",
+                column: "TodoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tags_TodoId",
                 table: "Tags",
                 column: "TodoId");
@@ -50,6 +75,9 @@ namespace lib.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Comments");
+
             migrationBuilder.DropTable(
                 name: "Tags");
 
