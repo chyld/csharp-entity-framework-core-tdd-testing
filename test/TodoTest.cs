@@ -61,5 +61,24 @@ namespace test
       ctx.Todos.First().Tags.First().Name.Should().Be("Programming");
       ctx.Todos.First().Comments.First().Text.Should().Be("Test comment");
     }
+
+    [Fact]
+    public void ShouldCompleteTodo()
+    {
+      using var ctx = new Database(_options);
+      ctx.Database.EnsureDeleted();
+      ctx.Database.EnsureCreated();
+
+      var todo = new Todo() { Status = StatusEnum.Open, Priority = PriorityEnum.Low, Title = "Code", Due = new(2020, 10, 3) };
+
+      ctx.Add(todo);
+      ctx.SaveChanges();
+
+      todo = ctx.Todos.First();
+      todo.Completed();
+      ctx.SaveChanges();
+
+      ctx.Todos.First().Status.Should().Be(StatusEnum.Closed);
+    }
   }
 }
