@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace lib
 {
@@ -24,7 +26,7 @@ namespace lib
       // db.Entry(some_obj).State = EntityState.Detached;
 
       // use either option below to log the queries to the console
-      // options.LogTo(Console.WriteLine, LogLevel.Information);
+      // options.LogTo(Console.WriteLine, LogLevel.Debug);
       // options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
 
       // displays parameter values in logs

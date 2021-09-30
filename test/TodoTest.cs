@@ -85,7 +85,22 @@ namespace test
       ctx.Add(todo);
       ctx.SaveChanges();
 
-      ctx.Tags.First().Todo.Title.Should().Be("Code");
+      ctx.Tags.Count().Should().Be(1);
+    }
+
+    [Fact]
+    public void WhenAddingMutipleSimilarTagsShouldOnlySaveOne()
+    {
+      using var ctx = new Database(_options);
+      ctx.Database.EnsureDeleted();
+      ctx.Database.EnsureCreated();
+
+      var todo = new Todo(ctx) { Title = "Code", Due = new(2020, 10, 3) };
+      todo.AddTag("Running", ColorEnum.Red);
+      todo.AddTag("Running", ColorEnum.Green);
+      todo.AddTag("Running", ColorEnum.Blue);
+
+      todo.Tags.Count().Should().Be(1);
     }
 
     [Fact]
@@ -106,22 +121,32 @@ namespace test
       ctx.SaveChanges();
 
       ctx.Tags.Count().Should().Be(1);
-      ctx.Tags.First().Todo.Title.Should().Be("Code");
+      ctx.Todos.Count().Should().Be(1);
     }
 
     [Fact]
-    public void WhenAddingMutipleSimilarTagsShouldOnlySaveOne()
+    public void NavigationBetweenTagsAndTodosShouldWork()
     {
       using var ctx = new Database(_options);
       ctx.Database.EnsureDeleted();
       ctx.Database.EnsureCreated();
 
-      var todo = new Todo(ctx) { Title = "Code", Due = new(2020, 10, 3) };
-      todo.AddTag("Running", ColorEnum.Red);
-      todo.AddTag("Running", ColorEnum.Green);
-      todo.AddTag("Running", ColorEnum.Blue);
+      var todo1 = new Todo(ctx) { Title = "Code", Due = new(2020, 10, 3) };
+      todo1.AddTag("Python", ColorEnum.Blue);
+      todo1.AddTag("General", ColorEnum.Red);
+      ctx.Add(todo1);
+      ctx.SaveChanges();
 
-      todo.Tags.Count().Should().Be(1);
+      var todo2 = new Todo(ctx) { Title = "Math", Due = new(2020, 11, 4) };
+      todo2.AddTag("Linear Algebra", ColorEnum.Blue);
+      todo2.AddTag("General", ColorEnum.Red);
+      ctx.Add(todo2);
+      ctx.SaveChanges();
+
+      ctx.Todos.Count().Should().Be(2);
+      ctx.Tags.Count().Should().Be(3);
+      ctx.Todos.Where(t => t.Title == "Code").First().Tags.First().Name.Should().Be("Python");
+      ctx.Tags.Where(t => t.Name == "Python").First().Todos.Where(t => t.Title == "Code").First().Title.Should().Be("Code");
     }
   }
 }

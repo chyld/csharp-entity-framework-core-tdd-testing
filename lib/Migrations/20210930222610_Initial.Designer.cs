@@ -9,7 +9,7 @@ using lib;
 namespace lib.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20210930171450_Initial")]
+    [Migration("20210930222610_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,6 +17,21 @@ namespace lib.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.10");
+
+            modelBuilder.Entity("TagTodo", b =>
+                {
+                    b.Property<string>("TagsName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TodosId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("TagsName", "TodosId");
+
+                    b.HasIndex("TodosId");
+
+                    b.ToTable("TagTodo");
+                });
 
             modelBuilder.Entity("lib.Comment", b =>
                 {
@@ -45,12 +60,7 @@ namespace lib.Migrations
                     b.Property<int>("Color")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TodoId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Name");
-
-                    b.HasIndex("TodoId");
 
                     b.ToTable("Tags");
                 });
@@ -78,6 +88,21 @@ namespace lib.Migrations
                     b.ToTable("Todos");
                 });
 
+            modelBuilder.Entity("TagTodo", b =>
+                {
+                    b.HasOne("lib.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("lib.Todo", null)
+                        .WithMany()
+                        .HasForeignKey("TodosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("lib.Comment", b =>
                 {
                     b.HasOne("lib.Todo", "Todo")
@@ -87,20 +112,9 @@ namespace lib.Migrations
                     b.Navigation("Todo");
                 });
 
-            modelBuilder.Entity("lib.Tag", b =>
-                {
-                    b.HasOne("lib.Todo", "Todo")
-                        .WithMany("Tags")
-                        .HasForeignKey("TodoId");
-
-                    b.Navigation("Todo");
-                });
-
             modelBuilder.Entity("lib.Todo", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

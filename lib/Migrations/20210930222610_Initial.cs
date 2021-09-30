@@ -8,6 +8,18 @@ namespace lib.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Color = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Name);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Todos",
                 columns: table => new
                 {
@@ -44,22 +56,27 @@ namespace lib.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tags",
+                name: "TagTodo",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Color = table.Column<int>(type: "INTEGER", nullable: false),
-                    TodoId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TagsName = table.Column<string>(type: "TEXT", nullable: false),
+                    TodosId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.Name);
+                    table.PrimaryKey("PK_TagTodo", x => new { x.TagsName, x.TodosId });
                     table.ForeignKey(
-                        name: "FK_Tags_Todos_TodoId",
-                        column: x => x.TodoId,
+                        name: "FK_TagTodo_Tags_TagsName",
+                        column: x => x.TagsName,
+                        principalTable: "Tags",
+                        principalColumn: "Name",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TagTodo_Todos_TodosId",
+                        column: x => x.TodosId,
                         principalTable: "Todos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -68,15 +85,18 @@ namespace lib.Migrations
                 column: "TodoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tags_TodoId",
-                table: "Tags",
-                column: "TodoId");
+                name: "IX_TagTodo_TodosId",
+                table: "TagTodo",
+                column: "TodosId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "TagTodo");
 
             migrationBuilder.DropTable(
                 name: "Tags");

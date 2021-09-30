@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace lib
@@ -7,6 +8,6 @@ namespace lib
     [Key]
     public string Name { get; set; }
     public ColorEnum Color { get; set; }
-    public Todo Todo { get; set; }
+    public List<Todo> Todos { get; set; }
   }
 }
