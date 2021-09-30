@@ -1,4 +1,5 @@
 ﻿using System;
+using lib;
 
 namespace app
 {
@@ -6,7 +7,10 @@ namespace app
   {
     static void Main(string[] args)
     {
-      Console.WriteLine("Hello World!");
+      using var db = new Database();
+      var t = new Tag() { Name = "Programming", Color = ColorEnum.Green };
+      db.Add(t);
+      db.SaveChanges();
     }
   }
 }

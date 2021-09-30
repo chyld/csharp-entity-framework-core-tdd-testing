@@ -8,7 +8,7 @@ using lib;
 namespace lib.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20210929234009_Initial")]
+    [Migration("20210930143932_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
