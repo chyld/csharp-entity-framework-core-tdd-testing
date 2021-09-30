@@ -8,7 +8,7 @@ using lib;
 namespace lib.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20210929233139_Initial")]
+    [Migration("20210929234009_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +27,7 @@ namespace lib.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Students");
+                    b.ToTable("Tags");
                 });
 #pragma warning restore 612, 618
         }

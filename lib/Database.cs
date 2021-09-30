@@ -5,7 +5,7 @@ namespace lib
 {
   public class Database : DbContext
   {
-    public DbSet<Tag> Students { get; set; }
+    public DbSet<Tag> Tags { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
       var basedir = System.AppContext.BaseDirectory;

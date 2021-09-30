@@ -25,7 +25,7 @@ namespace lib.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Students");
+                    b.ToTable("Tags");
                 });
 #pragma warning restore 612, 618
         }
