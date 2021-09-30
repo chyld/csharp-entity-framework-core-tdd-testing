@@ -29,7 +29,7 @@ namespace test
       ctx.Database.EnsureDeleted();
       ctx.Database.EnsureCreated();
 
-      var todo = new Todo() { Status = StatusEnum.Open, Priority = PriorityEnum.Low, Title = "Code", Due = new(2020, 10, 3) };
+      var todo = new Todo() { Title = "Code", Due = new(2020, 10, 3) };
 
       ctx.Add(todo);
       ctx.SaveChanges();
@@ -38,47 +38,90 @@ namespace test
     }
 
     [Fact]
-    public void TodoNavigationLinksShouldWork()
+    public void ShouldAddComment()
     {
       using var ctx = new Database(_options);
       ctx.Database.EnsureDeleted();
       ctx.Database.EnsureCreated();
 
-      var tag = new Tag() { Name = "Programming", Color = ColorEnum.Green };
-      var comment = new Comment() { Text = "Test comment" };
-      var todo = new Todo() { Status = StatusEnum.Open, Priority = PriorityEnum.Low, Title = "Code", Due = new(2020, 10, 3) };
-      todo.Tags.Add(tag);
-      todo.Comments.Add(comment);
+      var todo = new Todo() { Title = "Code", Due = new(2020, 10, 3) };
+      todo.AddComment("this is a comment");
+
+      ctx.Add(todo);
+      ctx.SaveChanges();
+
+      ctx.Todos.Count().Should().Be(1);
+      ctx.Comments.Count().Should().Be(1);
+      ctx.Comments.First().Text.Should().Be("this is a comment");
+    }
+
+    [Fact]
+    public void TodoCommentNavigationShouldWork()
+    {
+      using var ctx = new Database(_options);
+      ctx.Database.EnsureDeleted();
+      ctx.Database.EnsureCreated();
+
+      var todo = new Todo() { Title = "Code", Due = new(2020, 10, 3) };
+      todo.AddComment("this is a comment");
+
+      ctx.Add(todo);
+      ctx.SaveChanges();
+
+      ctx.Todos.First().Comments.First().Text.Should().Be("this is a comment");
+      ctx.Comments.First().Todo.Title.Should().Be("Code");
+    }
+
+    [Fact]
+    public void ShouldAddNewTag()
+    {
+      using var ctx = new Database(_options);
+      ctx.Database.EnsureDeleted();
+      ctx.Database.EnsureCreated();
+
+      var todo = new Todo(ctx) { Title = "Code", Due = new(2020, 10, 3) };
+      todo.AddTag("Sports", ColorEnum.Red);
+
+      ctx.Add(todo);
+      ctx.SaveChanges();
+
+      ctx.Tags.First().Todo.Title.Should().Be("Code");
+    }
+
+    [Fact]
+    public void ShouldAddExistingTag()
+    {
+      using var ctx = new Database(_options);
+      ctx.Database.EnsureDeleted();
+      ctx.Database.EnsureCreated();
+
+      var tag = new Tag() { Name = "Running", Color = ColorEnum.Blue };
+      ctx.Add(tag);
+      ctx.SaveChanges();
+
+      var todo = new Todo(ctx) { Title = "Code", Due = new(2020, 10, 3) };
+      todo.AddTag("Running", ColorEnum.Green);
 
       ctx.Add(todo);
       ctx.SaveChanges();
 
       ctx.Tags.Count().Should().Be(1);
-      ctx.Comments.Count().Should().Be(1);
-      ctx.Todos.Count().Should().Be(1);
       ctx.Tags.First().Todo.Title.Should().Be("Code");
-      ctx.Comments.First().Todo.Priority.Should().Be(PriorityEnum.Low);
-      ctx.Todos.First().Tags.First().Name.Should().Be("Programming");
-      ctx.Todos.First().Comments.First().Text.Should().Be("Test comment");
     }
 
     [Fact]
-    public void ShouldCompleteTodo()
+    public void WhenAddingMutipleSimilarTagsShouldOnlySaveOne()
     {
       using var ctx = new Database(_options);
       ctx.Database.EnsureDeleted();
       ctx.Database.EnsureCreated();
 
-      var todo = new Todo() { Status = StatusEnum.Open, Priority = PriorityEnum.Low, Title = "Code", Due = new(2020, 10, 3) };
+      var todo = new Todo(ctx) { Title = "Code", Due = new(2020, 10, 3) };
+      todo.AddTag("Running", ColorEnum.Red);
+      todo.AddTag("Running", ColorEnum.Green);
+      todo.AddTag("Running", ColorEnum.Blue);
 
-      ctx.Add(todo);
-      ctx.SaveChanges();
-
-      todo = ctx.Todos.First();
-      todo.Completed();
-      ctx.SaveChanges();
-
-      ctx.Todos.First().Status.Should().Be(StatusEnum.Closed);
+      todo.Tags.Count().Should().Be(1);
     }
   }
 }

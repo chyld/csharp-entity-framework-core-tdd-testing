@@ -8,11 +8,12 @@ namespace app
     static void Main(string[] args)
     {
       using var db = new Database();
-      var tag = new Tag() { Name = "Programming", Color = ColorEnum.Green };
-      var comment = new Comment() { Text = "Work on C#" };
-      var todo = new Todo() { Status = StatusEnum.Open, Priority = PriorityEnum.Low, Title = "Code", Due = new(2020, 10, 3) };
-      todo.Tags.Add(tag);
-      todo.Comments.Add(comment);
+
+      var todo = new Todo(db) { Title = "Code", Due = new(2020, 10, 3) };
+      todo.AddTag("C#", ColorEnum.Blue);
+      todo.AddTag(".NET", ColorEnum.Green);
+      todo.AddTag("EF Core", ColorEnum.Blue);
+      todo.AddComment("Work on Project");
 
       db.Add(todo);
       db.SaveChanges();
