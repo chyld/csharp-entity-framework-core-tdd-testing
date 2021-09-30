@@ -8,8 +8,11 @@ namespace app
     static void Main(string[] args)
     {
       using var db = new Database();
-      var t = new Tag() { Name = "Programming", Color = ColorEnum.Green };
-      db.Add(t);
+      var tag = new Tag() { Name = "Programming", Color = ColorEnum.Green };
+      var todo = new Todo() { Status = StatusEnum.Open, Priority = PriorityEnum.Low, Title = "Code", Due = new(2020, 10, 3) };
+      todo.Tags.Add(tag);
+
+      db.Add(todo);
       db.SaveChanges();
     }
   }

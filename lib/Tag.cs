@@ -7,5 +7,6 @@ namespace lib
     [Key]
     public string Name { get; set; }
     public ColorEnum Color { get; set; }
+    public Todo Todo { get; set; }
   }
 }

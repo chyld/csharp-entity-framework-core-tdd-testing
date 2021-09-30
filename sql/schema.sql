@@ -2,7 +2,18 @@ CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
     "MigrationId" TEXT NOT NULL CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY,
     "ProductVersion" TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS "Todos" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Todos" PRIMARY KEY AUTOINCREMENT,
+    "Status" INTEGER NOT NULL,
+    "Priority" INTEGER NOT NULL,
+    "Title" TEXT NULL,
+    "Due" TEXT NOT NULL
+);
+CREATE TABLE sqlite_sequence(name,seq);
 CREATE TABLE IF NOT EXISTS "Tags" (
     "Name" TEXT NOT NULL CONSTRAINT "PK_Tags" PRIMARY KEY,
-    "Color" INTEGER NOT NULL
+    "Color" INTEGER NOT NULL,
+    "TodoId" INTEGER NULL,
+    CONSTRAINT "FK_Tags_Todos_TodoId" FOREIGN KEY ("TodoId") REFERENCES "Todos" ("Id") ON DELETE RESTRICT
 );
+CREATE INDEX "IX_Tags_TodoId" ON "Tags" ("TodoId");
